@@ -8,6 +8,31 @@ This is an assessment project completed for **Tezda Company**. It was developed 
 
 This project demonstrates the use of modern Flutter tools and practices to build a feature-rich and scalable application. The app is styled with **Material Design** and includes functionality such as routing, localization, and state management.
 
+<table>
+  <tr>
+    <th>Home Screen</th>
+    <th>Profile Screen</th>
+    <th>Settings Screen</th>
+  </tr>
+  <tr>
+    <td>
+      <img src="screenshots/shot1.png" alt="Home Screen" width="250"/>
+      <br>
+      <b>Home Screen</b>
+    </td>
+    <td>
+      <img src="screenshots/shot2.png" alt="Profile Screen" width="250"/>
+      <br>
+      <b>Profile Screen</b>
+    </td>
+    <td>
+      <img src="screenshots/shot3.png" alt="Settings Screen" width="250"/>
+      <br>
+      <b>Settings Screen</b>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## Technologies Used
