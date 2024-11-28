@@ -1,4 +1,6 @@
 {
+  "add_to_favourote": "Add to Favourite",
+  "added_to_fav": "Added to favourites",
   "confirm_password": "Confirm password",
   "create_password": "Create password",
   "email": "Email",
@@ -8,9 +10,13 @@
   "products": "Products",
   "profile": "Profile",
   "register_for_this_assesment": "Register for this assessment",
+  "remove_from_favourite": "Remove from Favourite",
+  "removed": "removed from favourites",
+  "save_changes": "Save Changes",
   "title": "Tezda Test",
   "something_went_wrong": "Something went wrong.",
   "continuee": "Continue",
+  "view_product": "View Product",
   "you_are_offline": "You’re offline",
   "poor_slow_network": "Poor/slow network",
   "cancel": "Cancel",
@@ -41,5 +47,6 @@
   "name_must_not_empty": "Name must not be empty",
   "name_at_least_3_characters_long": "Name must  be at least 3 characters long",
   "select_a_date": "Please select a date",
-  "account_created_successfully": "Account Created Successfully"
+  "account_created_successfully": "Account Created Successfully",
+  "are_you_sure_you_want_to_logout": "Are you sure you want to logout"
 }

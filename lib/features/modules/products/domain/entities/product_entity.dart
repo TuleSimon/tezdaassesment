@@ -26,6 +26,17 @@ class ProductEntity extends Equatable {
         category,
         images,
       ];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': this.id,
+      'title': this.title,
+      'price': this.price,
+      'description': this.description,
+      'category': this.category.toJson(),
+      'images': this.images,
+    };
+  }
 }
 
 class CategoryEntity extends Equatable {
@@ -41,4 +52,12 @@ class CategoryEntity extends Equatable {
 
   @override
   List<Object> get props => [id, name, image];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': this.id,
+      'name': this.name,
+      'image': this.image,
+    };
+  }
 }

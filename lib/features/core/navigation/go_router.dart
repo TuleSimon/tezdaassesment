@@ -10,7 +10,10 @@ import 'package:tezdaassesment/features/modules/authentication/presentation/rout
 import 'package:tezdaassesment/features/modules/common/model/loggedin_user.dart';
 import 'package:tezdaassesment/features/modules/common/shared_prefs/preference_manager.dart';
 import 'package:tezdaassesment/features/modules/onboarding/presentation/pages/OnboardingHomeScreen.dart';
+import 'package:tezdaassesment/features/modules/products/presentation/pages/favourites_page.dart';
+import 'package:tezdaassesment/features/modules/products/presentation/pages/product_details_page.dart';
 import 'package:tezdaassesment/features/modules/products/presentation/pages/product_page.dart';
+import 'package:tezdaassesment/features/modules/profile/presentation/pages/profile_screen.dart';
 
 GlobalKey<NavigatorState> parentKey = GlobalKey<NavigatorState>();
 StreamSubscription<LoggedInUser?>? subscription;
@@ -22,6 +25,15 @@ GoRouter appRouter = GoRouter(
         path: AppRoutes.OnboardingHomeScreen.route,
         pageBuilder: (context, state) =>
             getTransition(const Onboardinghomescreen(), state)),
+    GoRoute(
+        path: AppRoutes.ProductDetailsPage.routeWithArgs ??
+            AppRoutes.ProductDetailsPage.route,
+        pageBuilder: (context, state) => getTransition(
+            ProductDetailsPage(
+              productId: state.pathParameters[IdParam]!,
+              firstImageUrl: state.pathParameters[ImageParam]!,
+            ),
+            state)),
     ShellRoute(
       parentNavigatorKey: parentKey,
       builder: (BuildContext context, GoRouterState state, Widget child) {
@@ -40,13 +52,13 @@ GoRouter appRouter = GoRouter(
         GoRoute(
           path: AppRoutes.FavouritesRoute.route,
           builder: (BuildContext context, GoRouterState state) {
-            return SizedBox();
+            return const FavouritesPage();
           },
         ),
         GoRoute(
           path: AppRoutes.ProfileRoute.route,
           builder: (BuildContext context, GoRouterState state) {
-            return SizedBox();
+            return const ProfileHomeScreen();
           },
         ),
       ],
@@ -60,7 +72,7 @@ GoRouter appRouter = GoRouter(
     final router = GetIt.instance<GoRouter>();
     await subscription?.cancel();
     subscription = sharedPresfs.getLoggedInUserStream().listen((user) {
-      final isInAUthScreen = [AppRoutes.LoginScreen]
+      final isInAUthScreen = [AppRoutes.LoginScreen, AppRoutes.Register]
               .map((route) => route.route)
               .firstWhereOrNull((route) {
             debugPrint(route);

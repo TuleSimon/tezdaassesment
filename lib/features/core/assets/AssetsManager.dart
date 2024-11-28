@@ -42,4 +42,6 @@ class AllAppAssets {
   static final MarketIcon = _Assetsmanager("market.svg", _AssetType.SVG);
   static final SuccessCheckSvg =
       _Assetsmanager("success_icon.svg", _AssetType.SVG);
+  static final EditPenSvg = _Assetsmanager("edit_pen.svg", _AssetType.SVG);
+  static final verifiedIcon = _Assetsmanager("verified.svg", _AssetType.SVG);
 }

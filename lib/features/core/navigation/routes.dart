@@ -24,6 +24,11 @@ class AppRoutes {
   static final ProfileRoute = _AppRoutes("/profile");
   static final LoginScreen = _AppRoutes("/login");
   static final Register = _AppRoutes("/register");
+  static final ViewProfile = _AppRoutes("/view_profile");
+  static final ProductDetailsPage = _AppRoutes(
+    "/view_product",
+    routeWithArgs: "/view_product/:$IdParam/:$ImageParam",
+  );
 
   /**
    * AUTHENTICATION SCREENS
@@ -32,3 +37,4 @@ class AppRoutes {
 
 const orderIdParam = "orderId";
 const IdParam = "idParam";
+const ImageParam = "imageParam";

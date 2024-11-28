@@ -45,5 +45,38 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+    	<string>We need access to your music library to allow you to play songs directly within the app.</string>
+    	<key>NSCameraUsageDescription</key>
+    	<string>We need access to your camera to take photos for your profile and to upload KYC details.</string>
+    	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    	<string>We need access to your location to provide location-based services and improve app functionality. For example,providing personalized menus or  showing location of a chef while a booking is in progress</string>
+    	<key>NSLocationAlwaysUsageDescription</key>
+    	<string>We need to always know your location to provide continuous location-based services, such as knowing your location for giving real time updates to the host and providing personalised menus</string>
+    	<key>NSLocationUsageDescription</key>
+    	<string>We need access to your location to provide location-based services on older devices.</string>
+    	<key>NSLocationWhenInUseUsageDescription</key>
+    	<string>We need access to your location while the app is in use to show real time location to a host so he is always aware where the chef he booked with is</string>
+    	<key>NSPhotoLibraryUsageDescription</key>
+    	<string>We need access to your photo library to allow you to upload photos to your profile within the app.</string>
+    	<key>NSPrivacyAccessedAPITypes</key>
+    	<array>
+    		<dict>
+    			<key>NSPrivacyAccessedAPICategoryUserDefaults</key>
+    			<string>We use user defaults to save your preferences and enhance your app experience.</string>
+    		</dict>
+    		<dict>
+    			<key>NSPrivacyAccessedAPICategoryFileTimestamp</key>
+    			<string>We access file timestamps to provide timely updates and cache management.</string>
+    		</dict>
+    		<dict>
+    			<key>NSPrivacyAccessedAPICategoryDiskSpace</key>
+    			<string>We check disk space to ensure your device has sufficient storage for optimal app performance.</string>
+    		</dict>
+    		<dict>
+    			<key>NSPrivacyAccessedAPICategorySystemBootTime</key>
+    			<string>We access system boot time to optimize our services based on your device&apos;s uptime.</string>
+    		</dict>
+    	</array>
 </dict>
 </plist>

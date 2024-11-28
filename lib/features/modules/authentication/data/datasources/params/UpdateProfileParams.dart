@@ -3,10 +3,9 @@ import 'package:tezdaassesment/features/core/utils/error/JsonSerilizable.dart';
 
 class Updateprofileparams extends Equatable
     implements JsonSerializable<Updateprofileparams> {
-  final String? first_name;
-  final String? last_name;
   final String? email;
-  final String? phone;
+  final String? name;
+  final String? avatar;
 
   @override
   Map<String, dynamic> toJson() {
@@ -14,30 +13,38 @@ class Updateprofileparams extends Equatable
   }
 
   @override
-  List<Object?> get props => [first_name, last_name, email, phone];
+  List<Object?> get props => [email, name];
 
   const Updateprofileparams({
-    this.first_name,
-    this.last_name,
     this.email,
-    this.phone,
+    this.name,
+    this.avatar,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      if (first_name != null) 'first_name': this.first_name,
-      if (last_name != null) 'last_name': this.last_name,
       if (email != null) 'email': this.email,
-      if (phone != null) 'phone': this.phone,
+      if (name != null) 'name': this.name,
+      if (avatar != null) 'avatar': this.avatar,
     };
   }
 
   factory Updateprofileparams.fromMap(Map<String, dynamic> map) {
     return Updateprofileparams(
-      first_name: map['first_name'] as String,
-      last_name: map['last_name'] as String,
       email: map['email'] as String,
-      phone: map['phone'] as String,
+      name: map['name'] as String,
+    );
+  }
+
+  Updateprofileparams copyWith({
+    String? email,
+    String? name,
+    String? avatar,
+  }) {
+    return Updateprofileparams(
+      email: email ?? this.email,
+      name: name ?? this.name,
+      avatar: avatar ?? this.avatar,
     );
   }
 }

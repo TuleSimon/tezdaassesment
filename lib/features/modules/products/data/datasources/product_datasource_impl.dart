@@ -29,20 +29,20 @@ class ProductDatasourceImpl extends ProductDatasource {
           .getList(Networkroutes.getCategories.route, fromJson: (data) {
         return CategoryDto.fromMap(data);
       }, fromCache: () async {
-        final categoriess =
-            await preferenceManager.getValue(PreferenceKeys.categories);
-        if (categoriess != null) {
-          final jsonn = json.decode(categoriess) as List<dynamic>;
-          final categories = jsonn
-              .map((e) => CategoryDto.fromMap(e as Map<String, dynamic>))
+        final categoriess = await preferenceManager
+            .getValueStringList(PreferenceKeys.categories);
+        if (categoriess.isNotEmpty) {
+          final categories = categoriess
+              .map((e) =>
+                  CategoryDto.fromMap(json.decode(e) as Map<String, dynamic>))
               .toList();
           return Right(categories);
         }
         return Left(NetworkException());
       });
       response.fold(left, (categoris) {
-        preferenceManager.setValue(PreferenceKeys.categories,
-            json.encode(categoris.map((e) => e.toMap()).toList()));
+        preferenceManager.setValueList(PreferenceKeys.categories,
+            categoris.map((e) => json.encode(e.toMap())).toList());
       });
       return response;
     } catch (err) {
@@ -58,6 +58,25 @@ class ProductDatasourceImpl extends ProductDatasource {
           .getList(Networkroutes.getProducts.route, queryParams: params.toMap(),
               fromJson: (data) {
         return ProductDTO.fromMap(data);
+      }, fromCache: () async {
+        if (params.offset == 0) {
+          final products = await preferenceManager
+              .getValueStringList(PreferenceKeys.products);
+          if (products.isNotEmpty) {
+            final productsList = products
+                .map((e) =>
+                    ProductDTO.fromMap(json.decode(e) as Map<String, dynamic>))
+                .toList();
+            return Right(productsList);
+          }
+        }
+        return Left(NetworkException());
+      });
+      response.fold(left, (products) {
+        if (params.offset == 0) {
+          preferenceManager.setValueList(PreferenceKeys.products,
+              products.map((e) => json.encode(e.toMap())).toList());
+        }
       });
       return response;
     } catch (err) {

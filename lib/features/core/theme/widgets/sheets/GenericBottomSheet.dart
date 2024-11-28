@@ -1,10 +1,16 @@
+import 'dart:io';
+
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tezdaassesment/features/core/theme/hegmof_theme.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/HFilledButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/HOutlinedButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/layouts/ScollableColumn.dart';
+import 'package:tezdaassesment/features/core/theme/widgets/text/TextWithIcon.dart';
 import 'package:tezdaassesment/features/core/utils/extensions.dart';
 
 class GenericBottomSheet extends StatelessWidget {
@@ -92,5 +98,96 @@ class GenericBottomSheet extends StatelessWidget {
             ]
           ]),
     );
+  }
+}
+
+Widget selectImageSourceSheet(
+    BuildContext context, Function(File) onImagePicked) {
+  void parseResult(Either<String, File?> result) {
+    result.fold((err) {
+      if (err == NO_IMAGE_SELECTED) {
+        context.showError("No image selected");
+      } else if (err == IMAGE_SIZE_TOO_LARGE) {
+        context.showError("Image size is too large");
+      } else {
+        context.showError(context.getLocalization()!.something_went_wrong);
+      }
+      context.pop();
+    }, (file) {
+      if (file != null) {
+        onImagePicked(file);
+        context.pop(file);
+      }
+    });
+  }
+
+  return Padding(
+    padding: horizontalPadding.copyWith(top: 20.h, bottom: 20.h),
+    child: Column(
+      children: [
+        InkWell(
+          onTap: () async {
+            final result = await AppImagePicker.pickImageFromSource(true);
+            parseResult(result);
+          },
+          child: HTextWithIcon(
+            text: "Camera",
+            icon: Icons.camera_alt_rounded,
+            tint: context.getColorScheme().onSurface,
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Divider(
+          color: context.getColorScheme().surfaceContainer,
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        InkWell(
+          onTap: () async {
+            final result = await AppImagePicker.pickImageFromSource(false);
+            parseResult(result);
+          },
+          child: HTextWithIcon(
+            text: "Gallery",
+            icon: Icons.image_outlined,
+            tint: context.getColorScheme().onSurface,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+const NO_IMAGE_SELECTED = '1001';
+const IMAGE_SIZE_TOO_LARGE = '1002';
+
+class AppImagePicker {
+  static final ImagePicker _picker = ImagePicker();
+
+  static Future<double> _getXFileSizeInMB(XFile file) async {
+    // Get the file size in bytes directly from XFile
+    int fileSizeInBytes = await file.length() ?? 0;
+
+    // Convert bytes to megabytes
+    double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+    // Format to two decimal places
+    return double.parse(fileSizeInMB.toStringAsFixed(2));
+  }
+
+  static Future<Either<String, File?>> pickImageFromSource(
+      bool isCamera) async {
+    final XFile? photo = await _picker.pickImage(
+        source: isCamera ? ImageSource.camera : ImageSource.gallery);
+    if (photo == null) return const Left(NO_IMAGE_SELECTED);
+    double size = await _getXFileSizeInMB(photo);
+    if (size < 4.1) {
+      return Right(File(photo.path));
+    } else {
+      return const Left(IMAGE_SIZE_TOO_LARGE);
+    }
   }
 }

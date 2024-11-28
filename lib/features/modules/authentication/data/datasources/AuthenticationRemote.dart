@@ -3,7 +3,6 @@ import 'package:tezdaassesment/features/modules/authentication/data/datasources/
 import 'package:tezdaassesment/features/modules/authentication/data/datasources/params/UpdateProfileParams.dart';
 import 'package:tezdaassesment/features/modules/authentication/data/datasources/params/UpdateProfilePicParams.dart';
 import 'package:tezdaassesment/features/modules/authentication/data/models/file_model.dart';
-import 'package:tezdaassesment/features/modules/authentication/data/models/jwt_model.dart';
 import 'package:tezdaassesment/features/modules/common/model/loggedin_user.dart';
 
 abstract class IAuthenticationRemote {
@@ -27,7 +26,13 @@ abstract class IAuthenticationRemote {
   ///
   ///
   ///calls the get user profile endpoint to refresh user profile
-  Future<Either<Exception, LoggedInUser>> refreshProfile(JwtDto jwt);
+  Future<Either<Exception, LoggedInUser>> refreshProfile();
+
+  ///
+  ///
+  ///calls the get user profile endpoint to refresh user profile
+  Future<Either<Exception, LoggedInUser>> refreshProfile2(
+      Updateprofileparams profile);
 
   ///
   ///

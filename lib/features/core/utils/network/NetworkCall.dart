@@ -28,6 +28,11 @@ abstract class HNetworkcall {
       Y? body,
       required T Function(Map<String, dynamic>) fromJson});
 
+  Future<Either<Exception, T>> put<T, Y>(String route,
+      {Map<String, String>? queryParams,
+      Y? body,
+      required T Function(Map<String, dynamic>) fromJson});
+
   Future<Either<Exception, List<T>>> postList<T extends JsonSerializable<T>, Y>(
       String route,
       {Map<String, String>? queryParams,
@@ -131,6 +136,50 @@ class NetworkCall extends HNetworkcall {
       try {
         final response =
             await dio.post(route, queryParameters: queryParams, data: body);
+        final T result = fromJson(response.data as Map<String, dynamic>);
+        return Right(result);
+      } on DioException catch (e) {
+        debugPrint("Here1 ${e.response?.data}");
+        debugPrint("Here2 ${e.message}");
+        if (e.response?.data != null) {
+          final message = e.response?.data as Map<String, dynamic>?;
+          return Left(ServerException(
+              message: message != null
+                  ? "${message["message"]} ${message["validationErrors"]?.map((dynamic e) => "${e["field"]}: ${e["errors"].join(", ")}") ?? ""}"
+                  : UNKNOWN_ERROR_STRING));
+        } else {
+          if (e.type == DioExceptionType.connectionTimeout ||
+              e.type == DioExceptionType.receiveTimeout ||
+              e.type == DioExceptionType.sendTimeout) {
+            // Handle timeout error
+            return Left(TimeoutException());
+          } else if (e.type == DioExceptionType.connectionError) {
+            // Handle socket errors like network connection issues
+            return Left(NetworkException());
+          }
+          return Left(ServerException(message: UNKNOWN_ERROR_STRING));
+        }
+      } on Exception catch (e) {
+        debugPrint("Here ${e}");
+        return Left(ServerException(message: UNKNOWN_ERROR_STRING));
+      } catch (e) {
+        debugPrint("Here 2 ${e}");
+        return Left(ServerException(message: UNKNOWN_ERROR_STRING));
+      }
+    } else {
+      return Left(NetworkException());
+    }
+  }
+
+  @override
+  Future<Either<Exception, T>> put<T, Y>(String route,
+      {Map<String, String>? queryParams,
+      Y? body,
+      required T Function(Map<String, dynamic>) fromJson}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response =
+            await dio.put(route, queryParameters: queryParams, data: body);
         final T result = fromJson(response.data as Map<String, dynamic>);
         return Right(result);
       } on DioException catch (e) {

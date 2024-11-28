@@ -14,6 +14,7 @@ import 'package:tezdaassesment/features/modules/products/domain/entities/product
 import 'package:tezdaassesment/features/modules/products/presentation/riverpod/category_provider.dart';
 import 'package:tezdaassesment/features/modules/products/presentation/riverpod/product_provider.dart';
 import 'package:tezdaassesment/features/modules/products/presentation/widgets/product_widget.dart';
+import 'package:tezdaassesment/features/modules/profile/presentation/provider/profile_provider.dart';
 
 class ProductPage extends ConsumerStatefulWidget {
   const ProductPage({super.key});
@@ -38,6 +39,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
           textFieldHeight = renderBox.size.height;
         });
       }
+      ref.read(profileProvider.notifier).refreshProfile();
     });
     controller.addListener(scrollListener);
   }
@@ -72,132 +74,143 @@ class _ProductPageState extends ConsumerState<ProductPage> {
     });
 
     return Scaffold(
-      body: CustomScrollView(
-        controller: controller,
-        slivers: [
-          SliverAppBar(
-            backgroundColor: context.getColorScheme().primary,
-            centerTitle: false,
-            leading: Padding(
-              padding: EdgeInsets.only(left: horizontalPadding.left),
-              child: SvgPicture.asset(
-                AllAppAssets.MarketIcon.getPath(),
-                width: 24.w,
-                height: 24.w,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.read(productsProvider.notifier).getProducts();
+          ref.read(categoryProvider.notifier).getCategories();
+        },
+        child: CustomScrollView(
+          controller: controller,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              backgroundColor: context.getColorScheme().primary,
+              centerTitle: false,
+              leading: Padding(
+                padding: EdgeInsets.only(left: horizontalPadding.left),
+                child: SvgPicture.asset(
+                  AllAppAssets.MarketIcon.getPath(),
+                  width: 24.w,
+                  height: 24.w,
+                ),
               ),
+              leadingWidth: 46.w,
+              pinned: true,
+              expandedHeight: kToolbarHeight +
+                  context.getTopPadding() +
+                  (textFieldHeight - 20),
+              title: Text(context.getLocalization()!.products),
+              titleTextStyle: context
+                  .getTextTheme()
+                  .titleMedium
+                  ?.copyWith(color: context.getColorScheme().onPrimary),
+              flexibleSpace: textFieldSpace(expandedHeight, (query) {
+                productsNotifier.searchProducts(query);
+              }),
             ),
-            leadingWidth: 46.w,
-            pinned: true,
-            expandedHeight: kToolbarHeight +
-                context.getTopPadding() +
-                (textFieldHeight - 20),
-            title: Text(context.getLocalization()!.products),
-            titleTextStyle: context
-                .getTextTheme()
-                .titleMedium
-                ?.copyWith(color: context.getColorScheme().onPrimary),
-            flexibleSpace: textFieldSpace(expandedHeight,(query){
-              productsNotifier.searchProducts(query);
-            }),
-          ),
-          Consumer(
-            builder: (context, ref, child) {
-              final currentState = ref.watch(categoryProvider);
-              return SliverAppBar(
-                primary: false,
-                backgroundColor: context.getColorScheme().primary,
-                automaticallyImplyLeading: false,
-                title: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: currentState.loading
-                      ? Row(
-                          children: List.generate(10, (ge) {
-                            return Padding(
-                              padding: EdgeInsets.only(right: 8.w),
-                              child: categoryTab(
-                                false,
-                                name: "loading",
-                                context,
-                                () {},
-                                loading: true,
-                              ),
-                            );
-                          }),
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            categoryTab(
-                              currentState.activeCategoryId == -1,
-                              name: context.getLocalization()!.all,
-                              context,
-                              () {
-                                ref
-                                    .read(categoryProvider.notifier)
-                                    .selectCategory(null);
-                              },
-                            ),
-                            SizedBox(width: 10.w),
-                            ...currentState.categories.map(
-                              (category) => Padding(
-                                padding: EdgeInsets.only(right: 10.w),
+            Consumer(
+              builder: (context, ref, child) {
+                final currentState = ref.watch(categoryProvider);
+                return SliverAppBar(
+                  primary: false,
+                  backgroundColor: context.getColorScheme().primary,
+                  automaticallyImplyLeading: false,
+                  title: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: currentState.loading
+                        ? Row(
+                            children: List.generate(10, (ge) {
+                              return Padding(
+                                padding: EdgeInsets.only(right: 8.w),
                                 child: categoryTab(
-                                  currentState.activeCategoryId == category.id,
-                                  name: category.name,
+                                  false,
+                                  name: "loading",
                                   context,
-                                  () {
-                                    ref
-                                        .read(categoryProvider.notifier)
-                                        .selectCategory(category.id);
-                                  },
+                                  () {},
+                                  loading: true,
+                                ),
+                              );
+                            }),
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              categoryTab(
+                                currentState.activeCategoryId == -1,
+                                name: context.getLocalization()!.all,
+                                context,
+                                () {
+                                  ref
+                                      .read(categoryProvider.notifier)
+                                      .selectCategory(null);
+                                },
+                              ),
+                              SizedBox(width: 10.w),
+                              ...currentState.categories.map(
+                                (category) => Padding(
+                                  padding: EdgeInsets.only(right: 10.w),
+                                  child: categoryTab(
+                                    currentState.activeCategoryId ==
+                                        category.id,
+                                    name: category.name,
+                                    context,
+                                    () {
+                                      ref
+                                          .read(categoryProvider.notifier)
+                                          .selectCategory(category.id);
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                ),
-                shadowColor: context.getColorScheme().primary,
-                surfaceTintColor: context.getColorScheme().primary,
-                scrolledUnderElevation: 0,
-                pinned: true,
-              );
-            },
-          ),
-          SliverToBoxAdapter(
-              child: SizedBox(
-            height: 20.h,
-          )),
-          _handleList(
-              currentProductState.products ?? [],
-              currentProductState.loading,
-              currentProductState.error,
-              currentProductState.network,
-              currentProductState.poorNetwork, () {
-            ref.read(productsProvider.notifier).getProducts();
-          }),
-          if (currentProductState.loading &&
-              currentProductState.products.length >= 10) ...[
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 10.h,
-              ),
+                            ],
+                          ),
+                  ),
+                  shadowColor: context.getColorScheme().primary,
+                  surfaceTintColor: context.getColorScheme().primary,
+                  scrolledUnderElevation: 0,
+                  pinned: true,
+                );
+              },
             ),
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 24.w,
-                width: 24.w,
-                child: FittedBox(
-                  child: const CircularProgressIndicator(),
+                child: SizedBox(
+              height: 20.h,
+            )),
+            handleList(
+                currentProductState.products ?? [],
+                currentProductState.favourites,
+                context,
+                currentProductState.loading,
+                currentProductState.error,
+                currentProductState.network,
+                currentProductState.poorNetwork, () {
+              ref.read(productsProvider.notifier).getProducts();
+              ref.read(categoryProvider.notifier).getCategories();
+            }),
+            if (currentProductState.loading &&
+                currentProductState.products.length >= 10) ...[
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 10.h,
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 30.h,
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 24.w,
+                  width: 24.w,
+                  child: const FittedBox(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
               ),
-            ),
-          ]
-        ],
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 30.h,
+                ),
+              ),
+            ]
+          ],
+        ),
       ),
     );
   }
@@ -234,7 +247,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                           onSubmitted: (value) {
                             onChange(value);
                           },
-                          onChange: (query){
+                          onChange: (query) {
                             onChange(query);
                           },
                           keyboardType: TextInputType.text,
@@ -260,77 +273,85 @@ class _ProductPageState extends ConsumerState<ProductPage> {
       },
     );
   }
+}
 
-  Widget _handleList(List<ProductEntity> item, bool loading, String? error,
-      bool? networkError, bool? timeOutError, VoidCallback onRefresh) {
-    final errorMessage = error ??
-        (networkError == true
-            ? context.getLocalization()!.turn_on_your_internet_connection
-            : timeOutError == true
-                ? context.getLocalization()!.poor_slow_network
-                : null);
+Widget handleList(
+    List<ProductEntity> item,
+    List<ProductEntity> favourites,
+    BuildContext context,
+    bool loading,
+    String? error,
+    bool? networkError,
+    bool? timeOutError,
+    VoidCallback onRefresh) {
+  final errorMessage = error ??
+      (networkError == true
+          ? context.getLocalization()!.turn_on_your_internet_connection
+          : timeOutError == true
+              ? context.getLocalization()!.poor_slow_network
+              : null);
 
-    return (loading && item.isEmpty)
-        ? SliverGrid.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1, // Two items per row
-              mainAxisSpacing: 20.w, // Spacing between rows
-              crossAxisSpacing: 20.h, // Spacing between columns
-              childAspectRatio: 1 / 1, // Width to height ratio
-            ),
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(
-                    bottom: 20.h,
-                    left: horizontalPadding.left,
-                    right: horizontalPadding.right),
-                child: const ProductWidget(
-                  entity: null,
-                ),
-              );
-            },
-            itemCount: 10,
-          )
-        : (errorMessage != null && item.isEmpty)
-            ? SliverToBoxAdapter(
-                child: HErrorCard(
-                    noun: context.getLocalization()!.products,
-                    custom: errorMessage.parseError(context),
-                    icon: AllAppAssets.MarketIcon.getPath(),
-                    action: () {
-                      onRefresh();
-                    }))
-            : item.isEmpty
-                ? SliverToBoxAdapter(
-                    child: Padding(
-                    padding:
-                        EdgeInsets.only(top: context.getSize().height * 0.2),
-                    child: FractionallySizedBox(
-                      widthFactor: 0.7,
-                      child: HEmptyCard(
-                        noun: context.getLocalization()!.products,
-                        icon: AllAppAssets.MarketIcon.getPath(),
-                      ),
+  return (loading && item.isEmpty)
+      ? SliverGrid.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1, // Two items per row
+            mainAxisSpacing: 20.w, // Spacing between rows
+            crossAxisSpacing: 20.h, // Spacing between columns
+            childAspectRatio: 1 / 1, // Width to height ratio
+          ),
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: 20.h,
+                  left: horizontalPadding.left,
+                  right: horizontalPadding.right),
+              child: const ProductWidget(
+                entity: null,
+              ),
+            );
+          },
+          itemCount: 10,
+        )
+      : (errorMessage != null && item.isEmpty)
+          ? SliverToBoxAdapter(
+              child: HErrorCard(
+                  noun: context.getLocalization()!.products,
+                  custom: errorMessage.parseError(context),
+                  icon: AllAppAssets.MarketIcon.getPath(),
+                  action: () {
+                    onRefresh();
+                  }))
+          : item.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Padding(
+                  padding: EdgeInsets.only(top: context.getSize().height * 0.2),
+                  child: FractionallySizedBox(
+                    widthFactor: 0.7,
+                    child: HEmptyCard(
+                      noun: context.getLocalization()!.products,
+                      icon: AllAppAssets.MarketIcon.getPath(),
                     ),
-                  ))
-                : SliverPadding(
-                    padding: horizontalPadding,
-                    sliver: SliverGrid.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1, // Two items per row
-                        mainAxisSpacing: 20.w, // Spacing between rows
-                        crossAxisSpacing: 20.h, // Spacing between columns
-                        childAspectRatio: 1 / 1, // Width to height ratio
-                      ),
-                      itemBuilder: (context, index) {
-                        final itemEntity = item.getOrNull(index);
-                        if (itemEntity == null) return null;
-                        return ProductWidget(entity: itemEntity);
-                      },
-                      itemCount: item.length,
+                  ),
+                ))
+              : SliverPadding(
+                  padding: horizontalPadding,
+                  sliver: SliverGrid.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1, // Two items per row
+                      mainAxisSpacing: 20.w, // Spacing between rows
+                      crossAxisSpacing: 20.h, // Spacing between columns
+                      childAspectRatio: 1 / 1, // Width to height ratio
                     ),
-                  );
-  }
+                    itemBuilder: (context, index) {
+                      final itemEntity = item.getOrNull(index);
+                      if (itemEntity == null) return null;
+                      return ProductWidget(
+                        entity: itemEntity,
+                      );
+                    },
+                    itemCount: item.length,
+                  ),
+                );
 }
 
 Widget categoryTab(bool isActive, BuildContext context, VoidCallback onClick,

@@ -33,7 +33,7 @@ class IAuthenticationRemoteImpl extends IAuthenticationRemote {
       return response.fold((left) async {
         return Left(left);
       }, (jwt) async {
-        final profile = await refreshProfile(jwt);
+        final profile = await refreshProfile();
         await profile.fold((left) {}, (right) async {
           await preferenceManager.storeUserData(right.copyWith(
               token: jwt.access_token, refreshToken: jwt.refresh_token));
@@ -46,7 +46,26 @@ class IAuthenticationRemoteImpl extends IAuthenticationRemote {
   }
 
   @override
-  Future<Either<Exception, LoggedInUser>> refreshProfile(JwtDto jwt) async {
+  Future<Either<Exception, LoggedInUser>> refreshProfile() async {
+    try {
+      final jwt = await preferenceManager.getJwtData();
+      final Either<Exception, LoggedInUser> response = await networkCall
+          .get(Networkroutes.getProfile.route, fromJson: (data) {
+        return LoggedInUser.fromMap(data);
+      });
+      await response.fold((left) {}, (right) async {
+        await preferenceManager.storeUserData(right.copyWith(
+            token: jwt?.access_token, refreshToken: jwt?.refresh_token));
+      });
+      return response;
+    } catch (err) {
+      return Left(ServerException(message: UNKNOWN_ERROR_STRING));
+    }
+  }
+
+  @override
+  Future<Either<Exception, LoggedInUser>> refreshProfile2(
+      Updateprofileparams profile) async {
     try {
       final Either<Exception, LoggedInUser> response = await networkCall
           .get(Networkroutes.getProfile.route, fromJson: (data) {
@@ -61,7 +80,36 @@ class IAuthenticationRemoteImpl extends IAuthenticationRemote {
   @override
   Future<Either<Exception, LoggedInUser>> updateProfile(
       Updateprofileparams params) async {
-    return Left(NetworkException());
+    try {
+      String? photo;
+      if (params.avatar != null) {
+        final result = await updateProfilePic(
+            UpdateprofilePicparams(path: params.avatar!));
+        final uploadRes = result.fold((left) {
+          return Left(left);
+        }, (right) {
+          photo = right.location;
+          return null;
+        });
+        if (uploadRes != null) {
+          return Left(ServerException(message: UNKNOWN_ERROR_STRING));
+        }
+      }
+      final currentUser = await preferenceManager.getUserData2();
+      final Either<Exception, LoggedInUser> response = await networkCall.put(
+          "${Networkroutes.registerUser.route}/${currentUser?.id}",
+          body: params.copyWith(avatar: photo).toMap(), fromJson: (data) {
+        return LoggedInUser.fromMap(data);
+      });
+      await response.fold((left) {}, (right) async {
+        await preferenceManager.storeUserData(right.copyWith(
+            token: currentUser?.token,
+            refreshToken: currentUser?.refreshToken));
+      });
+      return response;
+    } catch (err) {
+      return Left(ServerException(message: UNKNOWN_ERROR_STRING));
+    }
   }
 
   @override
@@ -76,7 +124,7 @@ class IAuthenticationRemoteImpl extends IAuthenticationRemote {
       });
 
       final Either<Exception, FileDataDto> response = await networkCall
-          .patch(Networkroutes.updatePicture.route, body: formData,
+          .post(Networkroutes.updatePicture.route, body: formData,
               fromJson: (data) {
         return FileDataDto.fromMap(data);
       });

@@ -93,6 +93,8 @@ class PreferenceManagerImpl implements PreferenceManager {
   @override
   void clearUserData() async {
     await sharedPreferences.remove(PreferenceKeys.loggedInUser);
+    await sharedPreferences.remove(PreferenceKeys.jwt);
+    await sharedPreferences.remove(PreferenceKeys.favourites);
     refreshUserStream();
   }
 
@@ -114,6 +116,16 @@ class PreferenceManagerImpl implements PreferenceManager {
   @override
   Future<void> setValue(String value, String key) async {
     sharedPreferences.setString(key, EncryptionHelper().encryptData(value));
+  }
+
+  @override
+  Future<void> setValueList(String key, List<String> values) async {
+    sharedPreferences.setStringList(key, values);
+  }
+
+  @override
+  Future<List<String>> getValueStringList(String key) async {
+    return sharedPreferences.getStringList(key) ?? [];
   }
 
   @override
