@@ -31,7 +31,6 @@ class PreferenceManagerImpl implements PreferenceManager {
     // debugPrint("Storing User Data ${user.toString()}");
     await sharedPreferences.setString(PreferenceKeys.jwt,
         EncryptionHelper().encryptData(json.encode(jwt.toMap())));
-    refreshUserStream();
   }
 
   void refreshUserStream() async {

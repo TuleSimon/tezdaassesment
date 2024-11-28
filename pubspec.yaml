@@ -107,6 +107,34 @@ flutter:
   assets:
     - assets/images/
     - assets/svgs/
+    - assets/font/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/font/Poppins-ExtraBold.ttf
+          weight: 900
+        - asset: assets/font/Poppins-Bold.ttf
+          weight: 800
+        - asset: assets/font/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/font/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/font/Poppins-Thin.ttf
+          weight: 200
+        - asset: assets/font/Poppins-Medium.ttf
+          weight: 600
+        - asset: assets/font/Poppins-SemiBold.ttf
+          weight: 700
+    - family: Roboto
+      fonts:
+        - asset: assets/font/Roboto/Roboto-Black.ttf
+        - asset: assets/font/Roboto/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/font/Roboto/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/font/Roboto/Roboto-Black.ttf
+          weight: 900
 
   # To add assets to your application, add an assets section, like this:
   # assets:

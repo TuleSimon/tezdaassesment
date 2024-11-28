@@ -30,7 +30,8 @@ class IAuthenticationRemoteImpl extends IAuthenticationRemote {
         preferenceManager.storeJwt(jwt);
         return jwt;
       });
-      return response.fold((left) async {
+      final Either<Exception, LoggedInUser> res =
+          await response.fold((left) async {
         return Left(left);
       }, (jwt) async {
         final profile = await refreshProfile();
@@ -40,6 +41,7 @@ class IAuthenticationRemoteImpl extends IAuthenticationRemote {
         });
         return profile;
       });
+      return res;
     } catch (err) {
       return Left(ServerException(message: UNKNOWN_ERROR_STRING));
     }

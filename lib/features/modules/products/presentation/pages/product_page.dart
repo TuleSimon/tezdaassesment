@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tezdaassesment/features/core/assets/AssetsManager.dart';
-import 'package:tezdaassesment/features/core/theme/hegmof_theme.dart';
+import 'package:tezdaassesment/features/core/theme//app_theme.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/cards/HEmptyCard.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/skeleton/HSkeleton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/textfields/HTextFields.dart';
@@ -96,9 +96,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
               ),
               leadingWidth: 46.w,
               pinned: true,
-              expandedHeight: kToolbarHeight +
-                  context.getTopPadding() +
-                  (textFieldHeight - 20),
+              expandedHeight: context.getSize().height * 0.2,
               title: Text(context.getLocalization()!.products),
               titleTextStyle: context
                   .getTextTheme()

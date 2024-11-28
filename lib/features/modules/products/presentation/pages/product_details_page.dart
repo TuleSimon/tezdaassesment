@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:tezdaassesment/features/core/theme/hegmof_theme.dart';
+import 'package:tezdaassesment/features/core/theme//app_theme.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/BackButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/HFilledButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/skeleton/HSkeleton.dart';

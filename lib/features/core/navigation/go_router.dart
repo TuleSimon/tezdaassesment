@@ -72,15 +72,22 @@ GoRouter appRouter = GoRouter(
     final router = GetIt.instance<GoRouter>();
     await subscription?.cancel();
     subscription = sharedPresfs.getLoggedInUserStream().listen((user) {
-      final isInAUthScreen = [AppRoutes.LoginScreen, AppRoutes.Register]
-              .map((route) => route.route)
-              .firstWhereOrNull((route) {
+      final isInAUthScreen = [
+            AppRoutes.LoginScreen,
+            AppRoutes.Register,
+            AppRoutes.OnboardingHomeScreen
+          ].map((route) => route.route).firstWhereOrNull((route) {
             debugPrint(route);
             return route == state.path;
           }) !=
           null;
       if (user == null && !isInAUthScreen) {
         router.go(AppRoutes.OnboardingHomeScreen.route);
+        subscription?.cancel();
+        parentKey = GlobalKey<NavigatorState>();
+      }
+      if (user != null && isInAUthScreen) {
+        router.go(AppRoutes.HomeScreen.route);
         subscription?.cancel();
         parentKey = GlobalKey<NavigatorState>();
       }

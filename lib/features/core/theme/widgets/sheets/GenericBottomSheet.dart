@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tezdaassesment/features/core/theme/hegmof_theme.dart';
+import 'package:tezdaassesment/features/core/theme/app_theme.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/HFilledButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/HOutlinedButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/layouts/ScollableColumn.dart';

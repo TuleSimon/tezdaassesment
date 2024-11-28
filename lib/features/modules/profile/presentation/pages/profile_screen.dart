@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tezdaassesment/features/core/assets/AssetsManager.dart';
 import 'package:tezdaassesment/features/core/theme/app_colors.dart';
-import 'package:tezdaassesment/features/core/theme/hegmof_theme.dart';
+import 'package:tezdaassesment/features/core/theme//app_theme.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/button/HFilledButton.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/cards/GradientCard.dart';
 import 'package:tezdaassesment/features/core/theme/widgets/dialog/HAlertDialog.dart';

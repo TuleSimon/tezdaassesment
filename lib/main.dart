@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tezdaassesment/features/core/theme/hegmof_theme.dart';
+import 'package:tezdaassesment/features/core/theme//app_theme.dart';
 import 'package:tezdaassesment/features/core/utils/extensions.dart';
 import 'package:tezdaassesment/features/injections/core_injections.dart';
 import 'package:tezdaassesment/features/injections/data_injections.dart';
