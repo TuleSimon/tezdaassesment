@@ -11,8 +11,8 @@ This project demonstrates the use of modern Flutter tools and practices to build
 <table>
   <tr>
     <th>Home Screen</th>
+    <th>Product Details Screen</th>
     <th>Profile Screen</th>
-    <th>Settings Screen</th>
   </tr>
   <tr>
     <td>
