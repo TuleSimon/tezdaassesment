@@ -67,40 +67,30 @@ This project demonstrates the use of modern Flutter tools and practices to build
 
 1. Clone the repository:
    ```bash
-   https://github.com/TuleSimon/tezdaassesment.git```
+   https://github.com/TuleSimon/tezdaassesment.git
 
-Navigate to the project directory:
+    Navigate to the project directory:
 
-cd tezda-assessment
-Install dependencies:
+    cd tezda-assessment
+    Install dependencies:
+    
+    flutter pub get
+    Run the application:
+    
+    flutter run ```
 
-flutter pub get
-Run the application:
+### Key Components
+## State Management
+1. Implemented using Riverpod, which provides a robust and reactive architecture for managing app state.
+2. Routing
+   Used Go Router to handle app navigation efficiently.
+3. Dependency Injection
+4. Dependency management was handled by Get It, allowing for easy testing and modularity.
+5. Styling
+6. Followed Material Design principles for consistent theming and typography across the app.
+   Localization
+7. Integrated Flutter Localization for supporting multiple languages and a global audience.
 
-flutter run
-Key Components
-State Management
-Implemented using Riverpod, which provides a robust and reactive architecture for managing app state.
-Routing
-Used Go Router to handle app navigation efficiently.
-Dependency Injection
-Dependency management was handled by Get It, allowing for easy testing and modularity.
-Styling
-Followed Material Design principles for consistent theming and typography across the app.
-Localization
-Integrated Flutter Localization for supporting multiple languages and a global audience.
-Directory Structure
-lib/
-├── features/
-│   ├── core/
-│   │   ├── theme/
-│   │   ├── utils/
-│   ├── modules/
-│       ├── auth/
-│       ├── home/
-│       ├── settings/
-├── main.dart
-├── router.dart
 Acknowledgments
 I would like to thank Tezda Company for the opportunity to work on this assessment and for providing a challenging yet rewarding experience.
 
